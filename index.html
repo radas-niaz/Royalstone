@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stone Receipt Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #e9eef5);
+      color: #1f2937;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(17, 24, 39, 0.10);
+      border: 1px solid rgba(17, 24, 39, 0.06);
+    }
+    h1, h2 {
+      margin-top: 0;
+      color: #111827;
+    }
+    .brand-title {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .full {
+      grid-column: 1 / -1;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #374151;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #111827;
+      box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+    }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+    .primary { background: #111827; color: white; }
+    .secondary { background: #eef2f7; color: #111827; }
+    .preview-header {
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #111827, #374151);
+      color: white;
+      margin-bottom: 18px;
+    }
+    .preview-header h2 {
+      color: white;
+      margin-bottom: 6px;
+    }
+    .preview-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin: 10px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ececec;
+    }
+    .preview-row span {
+      color: #6b7280;
+    }
+    .preview-row strong {
+      font-weight: 700;
+      text-align: right;
+      color: #111827;
+      max-width: 60%;
+      word-break: break-word;
+    }
+    .totals {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 2px solid #111827;
+      border-bottom: none;
+    }
+    .grand-total {
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.6;
+      background: #f9fafb;
+      padding: 14px;
+      border-radius: 12px;
+    }
+    @media (max-width: 800px) {
+      .container {
+        grid-template-columns: 1fr;
+        margin: 20px auto;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="brand-title">Royal Stone Countertop</div>
+      <p class="subtitle">Create a professional receipt, preview the charges live, then download a clean PDF for the customer.</p>
+
+      <div class="grid">
+        <div>
+          <label for="customerName">Customer Name</label>
+          <input id="customerName" type="text" placeholder="Enter customer name" />
+        </div>
+
+        <div>
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="text" placeholder="Enter phone number" />
+        </div>
+
+        <div class="full">
+          <label for="address">Address</label>
+          <textarea id="address" placeholder="Enter full address"></textarea>
+        </div>
+
+        <div>
+          <label for="stoneType">Type of Stone</label>
+          <input id="stoneType" type="text" placeholder="Example: Quartz, Granite" />
+        </div>
+
+        <div>
+          <label for="thickness">Thickness</label>
+          <select id="thickness">
+            <option value="2cm">2cm</option>
+            <option value="3cm">3cm</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="basePrice">Base Price ($)</label>
+          <input id="basePrice" type="number" min="0" step="0.01" placeholder="Enter base price" />
+        </div>
+
+        <div>
+          <label for="removal">Removal</label>
+          <select id="removal">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="taxOption">Include Tax?</label>
+          <select id="taxOption">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="receiptNumber">Receipt Number</label>
+          <input id="receiptNumber" type="text" placeholder="Example: 1001" />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="downloadPDF()">Download PDF</button>
+        <button class="secondary" onclick="window.print()">Print Page</button>
+        <button class="secondary" onclick="resetForm()">Reset</button>
+      </div>
+
+      <p class="note">
+        Removal adds <strong>$250</strong> automatically. Tax is set to <strong>12%</strong>
+        by default (5% GST + 7% PST/RST). You can change this anytime in the code.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="preview-header">
+        <h2>Receipt Preview</h2>
+        <p>Royal Stone Countertop</p>
+      </div>
+      <div class="preview-row"><span>Name</span><strong id="prevName">-</strong></div>
+      <div class="preview-row"><span>Phone</span><strong id="prevPhone">-</strong></div>
+      <div class="preview-row"><span>Address</span><strong id="prevAddress">-</strong></div>
+      <div class="preview-row"><span>Stone</span><strong id="prevStone">-</strong></div>
+      <div class="preview-row"><span>Thickness</span><strong id="prevThickness">-</strong></div>
+      <div class="preview-row"><span>Base Price</span><strong id="prevBase">$0.00</strong></div>
+      <div class="preview-row"><span>Removal Fee</span><strong id="prevRemoval">$0.00</strong></div>
+      <div class="preview-row"><span>Tax</span><strong id="prevTax">$0.00</strong></div>
+      <div class="preview-row"><span>Receipt #</span><strong id="prevReceipt">-</strong></div>
+      <div class="preview-row totals">
+        <span class="grand-total">Total</span>
+        <strong class="grand-total" id="prevTotal">$0.00</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BUSINESS_NAME = 'Royal Stone Countertop';
+    const GST_RATE = 0.05;
+    const PST_RATE = 0.07;
+    const REMOVAL_FEE = 250;
+
+    const fields = [
+      'customerName',
+      'phone',
+      'address',
+      'stoneType',
+      'thickness',
+      'basePrice',
+      'removal',
+      'taxOption',
+      'receiptNumber'
+    ];
+
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+      document.getElementById(id).addEventListener('change', updatePreview);
+    });
+
+    function getFormData() {
+      const customerName = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const stoneType = document.getElementById('stoneType').value.trim();
+      const thickness = document.getElementById('thickness').value;
+      const basePrice = parseFloat(document.getElementById('basePrice').value) || 0;
+      const removal = document.getElementById('removal').value;
+      const taxOption = document.getElementById('taxOption').value;
+      const receiptNumber = document.getElementById('receiptNumber').value.trim() || generateReceiptNumber();
+
+      const removalFee = removal === 'yes' ? REMOVAL_FEE : 0;
+      const subtotal = basePrice + removalFee;
+      const tax = taxOption === 'yes' ? subtotal * (GST_RATE + PST_RATE) : 0;
+      const total = subtotal + tax;
+
+      return {
+        customerName,
+        phone,
+        address,
+        stoneType,
+        thickness,
+        basePrice,
+        removal,
+        receiptNumber,
+        removalFee,
+        subtotal,
+        tax,
+        total,
+        taxOption
+      };
+    }
+
+    function formatCurrency(value) {
+      return `$${value.toFixed(2)}`;
+    }
+
+    function generateReceiptNumber() {
+      return 'RS-' + new Date().getTime().toString().slice(-6);
+    }
+
+    function updatePreview() {
+      const data = getFormData();
+      document.getElementById('prevName').textContent = data.customerName || '-';
+      document.getElementById('prevPhone').textContent = data.phone || '-';
+      document.getElementById('prevAddress').textContent = data.address || '-';
+      document.getElementById('prevStone').textContent = data.stoneType || '-';
+      document.getElementById('prevThickness').textContent = data.thickness || '-';
+      document.getElementById('prevBase').textContent = formatCurrency(data.basePrice);
+      document.getElementById('prevRemoval').textContent = formatCurrency(data.removalFee);
+      document.getElementById('prevTax').textContent = formatCurrency(data.tax);
+      document.getElementById('prevReceipt').textContent = data.receiptNumber || '-';
+      document.getElementById('prevTotal').textContent = formatCurrency(data.total);
+    }
+
+    function drawLine(doc, y, margin = 20, width = 170) {
+      doc.setDrawColor(210, 214, 220);
+      doc.line(margin, y, margin + width, y);
+    }
+
+    function addRow(doc, label, value, y, labelX = 20, valueX = 190) {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(90, 96, 105);
+      doc.text(label, labelX, y);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(17, 24, 39);
+      doc.text(String(value), valueX, y, { align: 'right' });
+    }
+
+    function downloadPDF() {
+      const data = getFormData();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+      doc.setFillColor(17, 24, 39);
+      doc.rect(0, 0, 210, 38, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.text(BUSINESS_NAME, 20, 18);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Customer Receipt', 20, 27);
+
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(135, 10, 55, 20, 3, 3, 'F');
+      doc.setTextColor(17, 24, 39);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('Receipt #', 142, 18);
+      doc.setFont('helvetica', 'normal');
+      doc.text(data.receiptNumber, 142, 24);
+      doc.text(new Date().toLocaleDateString(), 142, 29);
+
+      let y = 50;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(17, 24, 39);
+      doc.text('Customer Details', 20, y);
+      y += 6;
+      drawLine(doc, y);
+      y += 8;
+
+      addRow(doc, 'Name', data.customerName || '-', y);
+      y += 8;
+      addRow(doc, 'Phone', data.phone || '-', y);
+      y += 8;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(90, 96, 105);
+      doc.text('Address', 20, y);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(17, 24, 39);
+      const addressLines = doc.splitTextToSize(data.address || '-', 95);
+      doc.text(addressLines, 190, y, { align: 'right' });
+      y += Math.max(8, addressLines.length * 6 + 2);
+
+      y += 4;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text('Job Details', 20, y);
+      y += 6;
+      drawLine(doc, y);
+      y += 8;
+
+      addRow(doc, 'Type of Stone', data.stoneType || '-', y);
+      y += 8;
+      addRow(doc, 'Thickness', data.thickness, y);
+      y += 8;
+      addRow(doc, 'Removal', data.removal === 'yes' ? 'Yes' : 'No', y);
+      y += 12;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text('Charges', 20, y);
+      y += 6;
+      drawLine(doc, y);
+      y += 8;
+
+      addRow(doc, 'Base Price', formatCurrency(data.basePrice), y);
+      y += 8;
+      addRow(doc, 'Removal Fee', formatCurrency(data.removalFee), y);
+      y += 8;
+      addRow(doc, 'Tax', formatCurrency(data.tax), y);
+      y += 10;
+
+      doc.setFillColor(243, 244, 246);
+      doc.roundedRect(20, y - 6, 170, 16, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.setTextColor(17, 24, 39);
+      doc.text('Total', 25, y + 4);
+      doc.text(formatCurrency(data.total), 185, y + 4, { align: 'right' });
+
+      y += 24;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(107, 114, 128);
+      doc.text('Thank you for choosing Royal Stone Countertop.', 20, y);
+      doc.text('We appreciate your business.', 20, y + 6);
+
+      doc.save(`${(data.customerName || 'receipt').replace(/\s+/g, '_')}_receipt.pdf`);
+    }
+
+    function resetForm() {
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el.tagName === 'SELECT') {
+          el.selectedIndex = 0;
+        } else {
+          el.value = '';
+        }
+      });
+      document.getElementById('thickness').value = '2cm';
+      document.getElementById('removal').value = 'no';
+      document.getElementById('taxOption').value = 'yes';
+      updatePreview();
+    }
+
+    updatePreview();
+  </script>
+</body>
+</html>
