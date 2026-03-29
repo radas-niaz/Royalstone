@@ -247,6 +247,42 @@
         </div>
 
         <div>
+          <label for="kitchenSink">Kitchen Sink Included?</label>
+          <select id="kitchenSink">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+
+        <div id="kitchenSinkPriceWrap" style="display:none;">
+          <label for="kitchenSinkPrice">Kitchen Sink Price ($ each)</label>
+          <input id="kitchenSinkPrice" type="number" min="0" step="0.01" placeholder="Enter kitchen sink price" />
+        </div>
+
+        <div id="kitchenSinkQtyWrap" style="display:none;">
+          <label for="kitchenSinkQty">Kitchen Sink Quantity</label>
+          <input id="kitchenSinkQty" type="number" min="1" step="1" value="1" />
+        </div>
+
+        <div>
+          <label for="vanitySink">Vanity Sink Included?</label>
+          <select id="vanitySink">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+
+        <div id="vanitySinkPriceWrap" style="display:none;">
+          <label for="vanitySinkPrice">Vanity Sink Price ($ each)</label>
+          <input id="vanitySinkPrice" type="number" min="0" step="0.01" placeholder="Enter vanity sink price" />
+        </div>
+
+        <div id="vanitySinkQtyWrap" style="display:none;">
+          <label for="vanitySinkQty">Vanity Sink Quantity</label>
+          <input id="vanitySinkQty" type="number" min="1" step="1" value="1" />
+        </div>
+
+        <div>
           <label for="removal">Removal</label>
           <select id="removal">
             <option value="no">No</option>
@@ -280,7 +316,7 @@
       </div>
 
       <p class="note">
-        Base Price is calculated automatically as <strong>Sq Ft × Price per Sq Ft</strong>. Removal adds <strong>$250</strong> automatically.
+        Base Price is calculated automatically as <strong>Sq Ft × Price per Sq Ft</strong>. Removal adds <strong>$250</strong> automatically. Tax is set to <strong>5%</strong>.
       </p>
     </div>
 
@@ -302,6 +338,10 @@
       <div class="preview-row"><span>Price / Sq Ft</span><strong id="prevPricePerSqft">$0.00</strong></div>
       <div class="preview-row"><span>Base Price</span><strong id="prevBase">$0.00</strong></div>
       <div class="preview-row"><span>Backsplash</span><strong id="prevBacksplash">No</strong></div>
+      <div class="preview-row"><span>Kitchen Sink</span><strong id="prevKitchenSink">No</strong></div>
+      <div class="preview-row"><span>Kitchen Sink Total</span><strong id="prevKitchenSinkTotal">$0.00</strong></div>
+      <div class="preview-row"><span>Vanity Sink</span><strong id="prevVanitySink">No</strong></div>
+      <div class="preview-row"><span>Vanity Sink Total</span><strong id="prevVanitySinkTotal">$0.00</strong></div>
       <div class="preview-row"><span>Removal Fee</span><strong id="prevRemoval">$0.00</strong></div>
       <div class="preview-row"><span>Tax</span><strong id="prevTax">$0.00</strong></div>
       <div class="preview-row"><span>Estimate #</span><strong id="prevEstimate">-</strong></div>
@@ -315,11 +355,12 @@
 
   <script>
     const BUSINESS_NAME = 'Royal Stone Countertop';
-    const BUSINESS_PHONE = '514561582';
+    const BUSINESS_PHONE = '514-561-5982';
     const BUSINESS_ADDRESS = '90 Froese Cres, Headingley, MB R4H 0E6';
-    const GST_RATE = 0.05;
-    const PST_RATE = 0.07;
+    const TAX_RATE = 0.05;
     const REMOVAL_FEE = 250;
+
+    let generatedEstimateNumber = '';
 
     const fieldIds = [
       'customerName',
@@ -331,6 +372,12 @@
       'pricePerSqft',
       'backsplash',
       'backsplashInches',
+      'kitchenSink',
+      'kitchenSinkPrice',
+      'kitchenSinkQty',
+      'vanitySink',
+      'vanitySinkPrice',
+      'vanitySinkQty',
       'removal',
       'taxOption',
       'estimateNumber',
@@ -360,15 +407,27 @@
       const pricePerSqft = parseFloat(getValue('pricePerSqft')) || 0;
       const backsplash = getValue('backsplash') || 'no';
       const backsplashInches = parseFloat(getValue('backsplashInches')) || 0;
+
+      const kitchenSink = getValue('kitchenSink') || 'no';
+      const kitchenSinkPrice = parseFloat(getValue('kitchenSinkPrice')) || 0;
+      const kitchenSinkQty = Math.max(1, parseInt(getValue('kitchenSinkQty')) || 1);
+
+      const vanitySink = getValue('vanitySink') || 'no';
+      const vanitySinkPrice = parseFloat(getValue('vanitySinkPrice')) || 0;
+      const vanitySinkQty = Math.max(1, parseInt(getValue('vanitySinkQty')) || 1);
+
       const removal = getValue('removal') || 'no';
       const taxOption = getValue('taxOption') || 'yes';
-      const estimateNumber = getValue('estimateNumber').trim() || generateEstimateNumber();
+      const estimateNumber = getValue('estimateNumber').trim() || generatedEstimateNumber;
       const notes = getValue('notes').trim();
 
       const basePrice = sqft * pricePerSqft;
+      const kitchenSinkTotal = kitchenSink === 'yes' ? kitchenSinkPrice * kitchenSinkQty : 0;
+      const vanitySinkTotal = vanitySink === 'yes' ? vanitySinkPrice * vanitySinkQty : 0;
       const removalFee = removal === 'yes' ? REMOVAL_FEE : 0;
-      const subtotal = basePrice + removalFee;
-      const tax = taxOption === 'yes' ? subtotal * (GST_RATE + PST_RATE) : 0;
+
+      const subtotal = basePrice + kitchenSinkTotal + vanitySinkTotal + removalFee;
+      const tax = taxOption === 'yes' ? subtotal * TAX_RATE : 0;
       const total = subtotal + tax;
 
       return {
@@ -382,8 +441,17 @@
         basePrice,
         backsplash,
         backsplashInches,
+        kitchenSink,
+        kitchenSinkPrice,
+        kitchenSinkQty,
+        kitchenSinkTotal,
+        vanitySink,
+        vanitySinkPrice,
+        vanitySinkQty,
+        vanitySinkTotal,
         removal,
         removalFee,
+        subtotal,
         tax,
         total,
         estimateNumber,
@@ -393,9 +461,28 @@
 
     function updatePreview() {
       const data = getFormData();
+
       const backsplashWrap = document.getElementById('backsplashInchesWrap');
       if (backsplashWrap) {
         backsplashWrap.style.display = data.backsplash === 'yes' ? 'block' : 'none';
+      }
+
+      const kitchenSinkPriceWrap = document.getElementById('kitchenSinkPriceWrap');
+      const kitchenSinkQtyWrap = document.getElementById('kitchenSinkQtyWrap');
+      if (kitchenSinkPriceWrap) {
+        kitchenSinkPriceWrap.style.display = data.kitchenSink === 'yes' ? 'block' : 'none';
+      }
+      if (kitchenSinkQtyWrap) {
+        kitchenSinkQtyWrap.style.display = data.kitchenSink === 'yes' ? 'block' : 'none';
+      }
+
+      const vanitySinkPriceWrap = document.getElementById('vanitySinkPriceWrap');
+      const vanitySinkQtyWrap = document.getElementById('vanitySinkQtyWrap');
+      if (vanitySinkPriceWrap) {
+        vanitySinkPriceWrap.style.display = data.vanitySink === 'yes' ? 'block' : 'none';
+      }
+      if (vanitySinkQtyWrap) {
+        vanitySinkQtyWrap.style.display = data.vanitySink === 'yes' ? 'block' : 'none';
       }
 
       document.getElementById('prevName').textContent = data.customerName || '-';
@@ -406,9 +493,21 @@
       document.getElementById('prevSqft').textContent = data.sqft.toFixed(2);
       document.getElementById('prevPricePerSqft').textContent = formatCurrency(data.pricePerSqft);
       document.getElementById('prevBase').textContent = formatCurrency(data.basePrice);
+
       document.getElementById('prevBacksplash').textContent = data.backsplash === 'yes'
         ? 'Yes (' + data.backsplashInches.toFixed(2) + ' in)'
         : 'No';
+
+      document.getElementById('prevKitchenSink').textContent = data.kitchenSink === 'yes'
+        ? 'Yes - ' + data.kitchenSinkQty + ' x ' + formatCurrency(data.kitchenSinkPrice)
+        : 'No';
+      document.getElementById('prevKitchenSinkTotal').textContent = formatCurrency(data.kitchenSinkTotal);
+
+      document.getElementById('prevVanitySink').textContent = data.vanitySink === 'yes'
+        ? 'Yes - ' + data.vanitySinkQty + ' x ' + formatCurrency(data.vanitySinkPrice)
+        : 'No';
+      document.getElementById('prevVanitySinkTotal').textContent = formatCurrency(data.vanitySinkTotal);
+
       document.getElementById('prevRemoval').textContent = formatCurrency(data.removalFee);
       document.getElementById('prevTax').textContent = formatCurrency(data.tax);
       document.getElementById('prevEstimate').textContent = data.estimateNumber || '-';
@@ -445,6 +544,7 @@
       try {
         const data = getFormData();
         const jspdfRef = window.jspdf;
+
         if (!jspdfRef || !jspdfRef.jsPDF) {
           alert('PDF library did not load. Please refresh the page and try again.');
           return;
@@ -519,11 +619,36 @@
         y += 8;
         addRow(doc, 'Base Price', formatCurrency(data.basePrice), y);
         y += 8;
-        addRow(doc, 'Backsplash', data.backsplash === 'yes' ? 'Yes (' + data.backsplashInches.toFixed(2) + ' in)' : 'No', y);
+        addRow(
+          doc,
+          'Backsplash',
+          data.backsplash === 'yes' ? 'Yes (' + data.backsplashInches.toFixed(2) + ' in)' : 'No',
+          y
+        );
+        y += 8;
+        addRow(
+          doc,
+          'Kitchen Sink',
+          data.kitchenSink === 'yes'
+            ? data.kitchenSinkQty + ' x ' + formatCurrency(data.kitchenSinkPrice) + ' = ' + formatCurrency(data.kitchenSinkTotal)
+            : 'No',
+          y
+        );
+        y += 8;
+        addRow(
+          doc,
+          'Vanity Sink',
+          data.vanitySink === 'yes'
+            ? data.vanitySinkQty + ' x ' + formatCurrency(data.vanitySinkPrice) + ' = ' + formatCurrency(data.vanitySinkTotal)
+            : 'No',
+          y
+        );
         y += 8;
         addRow(doc, 'Removal Fee', formatCurrency(data.removalFee), y);
         y += 8;
-        addRow(doc, 'Tax', formatCurrency(data.tax), y);
+        addRow(doc, 'Subtotal', formatCurrency(data.subtotal), y);
+        y += 8;
+        addRow(doc, 'Tax (5%)', formatCurrency(data.tax), y);
         y += 10;
 
         doc.setFillColor(243, 244, 246);
@@ -567,16 +692,27 @@
       fieldIds.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
+
         if (el.tagName === 'SELECT') {
           el.selectedIndex = 0;
+        } else if (id === 'kitchenSinkQty' || id === 'vanitySinkQty') {
+          el.value = '1';
         } else {
           el.value = '';
         }
       });
+
       document.getElementById('thickness').value = '2cm';
       document.getElementById('backsplash').value = 'no';
+      document.getElementById('kitchenSink').value = 'no';
+      document.getElementById('kitchenSinkQty').value = '1';
+      document.getElementById('kitchenSinkPrice').value = '';
+      document.getElementById('vanitySink').value = 'no';
+      document.getElementById('vanitySinkQty').value = '1';
+      document.getElementById('vanitySinkPrice').value = '';
       document.getElementById('removal').value = 'no';
       document.getElementById('taxOption').value = 'yes';
+      document.getElementById('estimateNumber').value = '';
       updatePreview();
     }
 
@@ -593,6 +729,7 @@
       document.getElementById('resetBtn').addEventListener('click', resetForm);
     }
 
+    generatedEstimateNumber = generateEstimateNumber();
     attachEvents();
     updatePreview();
   </script>
