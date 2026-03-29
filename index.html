@@ -7,20 +7,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #f5f7fa, #e9eef5);
       color: #1f2937;
     }
+
     .container {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 40px auto;
       padding: 20px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 24px;
     }
+
     .card {
       background: #fff;
       border-radius: 20px;
@@ -28,6 +31,7 @@
       box-shadow: 0 16px 40px rgba(17, 24, 39, 0.10);
       border: 1px solid rgba(17, 24, 39, 0.06);
     }
+
     .brand-title {
       font-size: 30px;
       font-weight: 800;
@@ -35,17 +39,20 @@
       letter-spacing: 0.3px;
       color: #111827;
     }
+
     .business-meta {
       color: #4b5563;
       line-height: 1.6;
       margin-bottom: 18px;
       font-size: 14px;
     }
+
     .subtitle {
       color: #6b7280;
       margin-bottom: 22px;
       line-height: 1.5;
     }
+
     .section-title {
       font-size: 16px;
       font-weight: 800;
@@ -54,14 +61,17 @@
       border-bottom: 1px solid #e5e7eb;
       color: #111827;
     }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
+
     .full {
       grid-column: 1 / -1;
     }
+
     label {
       display: block;
       font-weight: 700;
@@ -69,6 +79,7 @@
       font-size: 14px;
       color: #374151;
     }
+
     input, select, textarea {
       width: 100%;
       padding: 12px 14px;
@@ -79,20 +90,24 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+
     input:focus, select:focus, textarea:focus {
       border-color: #111827;
       box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
     }
+
     textarea {
       min-height: 88px;
       resize: vertical;
     }
+
     .buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 22px;
     }
+
     button {
       border: none;
       border-radius: 12px;
@@ -102,64 +117,22 @@
       cursor: pointer;
       transition: transform 0.15s ease, opacity 0.15s ease;
     }
+
     button:hover {
       transform: translateY(-1px);
       opacity: 0.95;
     }
-    .primary { background: #111827; color: white; }
-    .secondary { background: #eef2f7; color: #111827; }
-    .preview-header {
-      padding: 18px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #111827, #374151);
-      color: white;
-      margin-bottom: 18px;
-    }
-    .preview-header h2 {
-      margin: 0 0 8px 0;
+
+    .primary {
+      background: #111827;
       color: white;
     }
-    .preview-header p {
-      margin: 2px 0;
-      opacity: 0.92;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .estimate-note {
-      margin-top: 12px !important;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255,255,255,0.18);
-      font-style: italic;
-    }
-    .preview-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin: 10px 0;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ececec;
-    }
-    .preview-row span {
-      color: #6b7280;
-    }
-    .preview-row strong {
-      font-weight: 700;
-      text-align: right;
+
+    .secondary {
+      background: #eef2f7;
       color: #111827;
-      max-width: 60%;
-      word-break: break-word;
     }
-    .totals {
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 2px solid #111827;
-      border-bottom: none;
-    }
-    .grand-total {
-      font-size: 24px;
-      font-weight: 800;
-    }
+
     .note {
       margin-top: 16px;
       font-size: 13px;
@@ -169,13 +142,265 @@
       padding: 14px;
       border-radius: 12px;
     }
+
+    /* Receipt Styles */
+    .receipt-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .receipt-topbar {
+      height: 10px;
+      background: linear-gradient(90deg, #111827, #374151);
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 26px 28px 18px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .receipt-header h1 {
+      margin: 0 0 10px 0;
+      font-size: 28px;
+      line-height: 1.1;
+      color: #111827;
+    }
+
+    .receipt-header p {
+      margin: 4px 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .receipt-badge {
+      min-width: 220px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .receipt-badge-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+
+    .receipt-badge-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .receipt-badge-row span {
+      color: #6b7280;
+    }
+
+    .receipt-badge-row strong {
+      color: #111827;
+    }
+
+    .receipt-warning {
+      margin: 20px 28px 0;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .receipt-section {
+      padding: 22px 28px 0;
+    }
+
+    .receipt-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .receipt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .receipt-item {
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid #eef2f7;
+    }
+
+    .receipt-item span {
+      display: block;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .receipt-item strong {
+      display: block;
+      font-size: 15px;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .receipt-table {
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #ececec;
+    }
+
+    .receipt-row:last-child {
+      border-bottom: none;
+    }
+
+    .receipt-row span {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .receipt-row strong {
+      color: #111827;
+      font-size: 14px;
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+
+    .receipt-total-box {
+      margin: 26px 28px 0;
+      background: #111827;
+      color: white;
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .receipt-total-box span {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .receipt-total-box strong {
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .receipt-notes {
+      min-height: 60px;
+      background: #f9fafb;
+      border: 1px solid #eef2f7;
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #374151;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .receipt-footer {
+      padding: 24px 28px 28px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
     @media (max-width: 900px) {
       .container {
         grid-template-columns: 1fr;
         margin: 20px auto;
       }
+
       .grid {
         grid-template-columns: 1fr;
+      }
+
+      .receipt-header {
+        flex-direction: column;
+      }
+
+      .receipt-badge {
+        min-width: auto;
+      }
+
+      .receipt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+      }
+
+      .container {
+        display: block !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .container > .card:first-child {
+        display: none !important;
+      }
+
+      .print-area {
+        display: block !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+
+      .receipt-card {
+        padding: 0 !important;
+      }
+
+      .receipt-topbar {
+        height: 8px !important;
+      }
+
+      .receipt-warning,
+      .receipt-item,
+      .receipt-table,
+      .receipt-notes,
+      .receipt-badge {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      @page {
+        margin: 12mm;
+        size: auto;
       }
     }
   </style>
@@ -320,35 +545,123 @@
       </p>
     </div>
 
-    <div class="card">
-      <div class="preview-header">
-        <h2>Estimate Preview</h2>
-        <p><strong>Royal Stone Countertop</strong></p>
-        <p>Phone: 514-561-5982</p>
-        <p>90 Froese Cres, Headingley, MB R4H 0E6</p>
-        <p class="estimate-note">This is an estimate, final price may vary.</p>
+    <div class="card receipt-card print-area" id="printArea">
+      <div class="receipt-topbar"></div>
+
+      <div class="receipt-header">
+        <div>
+          <h1>Royal Stone Countertop</h1>
+          <p>Phone: 514-561-5982</p>
+          <p>90 Froese Cres, Headingley, MB R4H 0E6</p>
+        </div>
+
+        <div class="receipt-badge">
+          <div class="receipt-badge-title">ESTIMATE</div>
+          <div class="receipt-badge-row">
+            <span>Estimate #</span>
+            <strong id="prevEstimate">-</strong>
+          </div>
+          <div class="receipt-badge-row">
+            <span>Date</span>
+            <strong id="prevDate">-</strong>
+          </div>
+        </div>
       </div>
 
-      <div class="preview-row"><span>Name</span><strong id="prevName">-</strong></div>
-      <div class="preview-row"><span>Phone</span><strong id="prevPhone">-</strong></div>
-      <div class="preview-row"><span>Job Address</span><strong id="prevAddress">-</strong></div>
-      <div class="preview-row"><span>Stone</span><strong id="prevStone">-</strong></div>
-      <div class="preview-row"><span>Thickness</span><strong id="prevThickness">-</strong></div>
-      <div class="preview-row"><span>Sq Ft</span><strong id="prevSqft">0.00</strong></div>
-      <div class="preview-row"><span>Price / Sq Ft</span><strong id="prevPricePerSqft">$0.00</strong></div>
-      <div class="preview-row"><span>Base Price</span><strong id="prevBase">$0.00</strong></div>
-      <div class="preview-row"><span>Backsplash</span><strong id="prevBacksplash">No</strong></div>
-      <div class="preview-row"><span>Kitchen Sink</span><strong id="prevKitchenSink">No</strong></div>
-      <div class="preview-row"><span>Kitchen Sink Total</span><strong id="prevKitchenSinkTotal">$0.00</strong></div>
-      <div class="preview-row"><span>Vanity Sink</span><strong id="prevVanitySink">No</strong></div>
-      <div class="preview-row"><span>Vanity Sink Total</span><strong id="prevVanitySinkTotal">$0.00</strong></div>
-      <div class="preview-row"><span>Removal Fee</span><strong id="prevRemoval">$0.00</strong></div>
-      <div class="preview-row"><span>Tax</span><strong id="prevTax">$0.00</strong></div>
-      <div class="preview-row"><span>Estimate #</span><strong id="prevEstimate">-</strong></div>
-      <div class="preview-row"><span>Notes</span><strong id="prevNotes">-</strong></div>
-      <div class="preview-row totals">
-        <span class="grand-total">Total</span>
-        <strong class="grand-total" id="prevTotal">$0.00</strong>
+      <div class="receipt-warning">
+        This is an estimate. Final price may vary depending on site conditions, measurements, and selected options.
+      </div>
+
+      <div class="receipt-section">
+        <div class="receipt-section-title">Customer Details</div>
+
+        <div class="receipt-grid">
+          <div class="receipt-item">
+            <span>Customer Name</span>
+            <strong id="prevName">-</strong>
+          </div>
+          <div class="receipt-item">
+            <span>Phone</span>
+            <strong id="prevPhone">-</strong>
+          </div>
+          <div class="receipt-item full-width">
+            <span>Job Address</span>
+            <strong id="prevAddress">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-section">
+        <div class="receipt-section-title">Project Details</div>
+
+        <div class="receipt-table">
+          <div class="receipt-row">
+            <span>Stone Type</span>
+            <strong id="prevStone">-</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Thickness</span>
+            <strong id="prevThickness">-</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Sq Ft</span>
+            <strong id="prevSqft">0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Price / Sq Ft</span>
+            <strong id="prevPricePerSqft">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Base Price</span>
+            <strong id="prevBase">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Backsplash</span>
+            <strong id="prevBacksplash">No</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Kitchen Sink</span>
+            <strong id="prevKitchenSink">No</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Kitchen Sink Total</span>
+            <strong id="prevKitchenSinkTotal">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Vanity Sink</span>
+            <strong id="prevVanitySink">No</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Vanity Sink Total</span>
+            <strong id="prevVanitySinkTotal">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Removal Fee</span>
+            <strong id="prevRemoval">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Subtotal</span>
+            <strong id="prevSubtotal">$0.00</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Tax (5%)</span>
+            <strong id="prevTax">$0.00</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-total-box">
+        <span>Total</span>
+        <strong id="prevTotal">$0.00</strong>
+      </div>
+
+      <div class="receipt-section">
+        <div class="receipt-section-title">Notes</div>
+        <div class="receipt-notes" id="prevNotes">-</div>
+      </div>
+
+      <div class="receipt-footer">
+        Thank you for choosing Royal Stone Countertop.
       </div>
     </div>
   </div>
@@ -425,7 +738,6 @@
       const kitchenSinkTotal = kitchenSink === 'yes' ? kitchenSinkPrice * kitchenSinkQty : 0;
       const vanitySinkTotal = vanitySink === 'yes' ? vanitySinkPrice * vanitySinkQty : 0;
       const removalFee = removal === 'yes' ? REMOVAL_FEE : 0;
-
       const subtotal = basePrice + kitchenSinkTotal + vanitySinkTotal + removalFee;
       const tax = taxOption === 'yes' ? subtotal * TAX_RATE : 0;
       const total = subtotal + tax;
@@ -501,22 +813,25 @@
       document.getElementById('prevKitchenSink').textContent = data.kitchenSink === 'yes'
         ? 'Yes - ' + data.kitchenSinkQty + ' x ' + formatCurrency(data.kitchenSinkPrice)
         : 'No';
+
       document.getElementById('prevKitchenSinkTotal').textContent = formatCurrency(data.kitchenSinkTotal);
 
       document.getElementById('prevVanitySink').textContent = data.vanitySink === 'yes'
         ? 'Yes - ' + data.vanitySinkQty + ' x ' + formatCurrency(data.vanitySinkPrice)
         : 'No';
-      document.getElementById('prevVanitySinkTotal').textContent = formatCurrency(data.vanitySinkTotal);
 
+      document.getElementById('prevVanitySinkTotal').textContent = formatCurrency(data.vanitySinkTotal);
       document.getElementById('prevRemoval').textContent = formatCurrency(data.removalFee);
+      document.getElementById('prevSubtotal').textContent = formatCurrency(data.subtotal);
       document.getElementById('prevTax').textContent = formatCurrency(data.tax);
       document.getElementById('prevEstimate').textContent = data.estimateNumber || '-';
+      document.getElementById('prevDate').textContent = new Date().toLocaleDateString();
       document.getElementById('prevNotes').textContent = data.notes || '-';
       document.getElementById('prevTotal').textContent = formatCurrency(data.total);
     }
 
     function drawLine(doc, y) {
-      doc.setDrawColor(210, 214, 220);
+      doc.setDrawColor(220, 224, 229);
       doc.line(20, y, 190, y);
     }
 
@@ -524,6 +839,7 @@
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(90, 96, 105);
       doc.text(label, 20, y);
+
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(17, 24, 39);
       doc.text(String(value), 190, y, { align: 'right' });
@@ -533,10 +849,12 @@
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(90, 96, 105);
       doc.text(label, 20, y);
+
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(17, 24, 39);
       const lines = doc.splitTextToSize(String(value), 95);
       doc.text(lines, 190, y, { align: 'right' });
+
       return Math.max(8, lines.length * 6 + 2);
     }
 
@@ -553,38 +871,36 @@
         const doc = new jspdfRef.jsPDF({ unit: 'mm', format: 'a4' });
 
         doc.setFillColor(17, 24, 39);
-        doc.rect(0, 0, 210, 42, 'F');
+        doc.rect(0, 0, 210, 40, 'F');
 
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(22);
         doc.text(BUSINESS_NAME, 20, 16);
+
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
         doc.text('Phone: ' + BUSINESS_PHONE, 20, 24);
         doc.text(BUSINESS_ADDRESS, 20, 30);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.text('Estimate', 20, 37);
 
         doc.setFillColor(248, 250, 252);
-        doc.roundedRect(135, 10, 55, 22, 3, 3, 'F');
+        doc.roundedRect(138, 9, 52, 22, 3, 3, 'F');
         doc.setTextColor(17, 24, 39);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
-        doc.text('Estimate #', 142, 17);
+        doc.text('ESTIMATE', 144, 16);
         doc.setFont('helvetica', 'normal');
-        doc.text(data.estimateNumber, 142, 23);
-        doc.text(new Date().toLocaleDateString(), 142, 29);
+        doc.text('No: ' + data.estimateNumber, 144, 22);
+        doc.text('Date: ' + new Date().toLocaleDateString(), 144, 28);
 
-        let y = 52;
+        let y = 50;
 
         doc.setFillColor(255, 248, 235);
         doc.roundedRect(20, y, 170, 14, 3, 3, 'F');
         doc.setTextColor(120, 70, 15);
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(10.5);
-        doc.text('This is an estimate, final price may vary.', 25, y + 9);
+        doc.text('This is an estimate. Final price may vary.', 25, y + 9);
         y += 24;
 
         doc.setFont('helvetica', 'bold');
@@ -601,15 +917,16 @@
         y += 8;
         y += addWrappedRow(doc, 'Job Address', data.address || '-', y);
 
-        y += 5;
+        y += 6;
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(13);
-        doc.text('Stone Details', 20, y);
+        doc.setTextColor(17, 24, 39);
+        doc.text('Project Details', 20, y);
         y += 6;
         drawLine(doc, y);
         y += 8;
 
-        addRow(doc, 'Type of Stone', data.stoneType || '-', y);
+        addRow(doc, 'Stone Type', data.stoneType || '-', y);
         y += 8;
         addRow(doc, 'Thickness', data.thickness, y);
         y += 8;
@@ -619,6 +936,7 @@
         y += 8;
         addRow(doc, 'Base Price', formatCurrency(data.basePrice), y);
         y += 8;
+
         addRow(
           doc,
           'Backsplash',
@@ -626,6 +944,7 @@
           y
         );
         y += 8;
+
         addRow(
           doc,
           'Kitchen Sink',
@@ -635,6 +954,7 @@
           y
         );
         y += 8;
+
         addRow(
           doc,
           'Vanity Sink',
@@ -644,6 +964,7 @@
           y
         );
         y += 8;
+
         addRow(doc, 'Removal Fee', formatCurrency(data.removalFee), y);
         y += 8;
         addRow(doc, 'Subtotal', formatCurrency(data.subtotal), y);
@@ -652,27 +973,32 @@
         y += 10;
 
         doc.setFillColor(243, 244, 246);
-        doc.roundedRect(20, y - 6, 170, 16, 3, 3, 'F');
+        doc.roundedRect(20, y - 5, 170, 16, 3, 3, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(15);
         doc.setTextColor(17, 24, 39);
-        doc.text('Total', 25, y + 4);
-        doc.text(formatCurrency(data.total), 185, y + 4, { align: 'right' });
-        y += 22;
+        doc.text('Total', 25, y + 5);
+        doc.text(formatCurrency(data.total), 185, y + 5, { align: 'right' });
+        y += 24;
 
         if (data.notes) {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(13);
+          doc.setTextColor(17, 24, 39);
           doc.text('Notes', 20, y);
           y += 6;
           drawLine(doc, y);
           y += 8;
+
+          doc.setFillColor(249, 250, 251);
+          doc.roundedRect(20, y - 5, 170, 22, 3, 3, 'F');
+
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(10.5);
           doc.setTextColor(75, 85, 99);
-          const noteLines = doc.splitTextToSize(data.notes, 170);
-          doc.text(noteLines, 20, y);
-          y += noteLines.length * 5 + 8;
+          const noteLines = doc.splitTextToSize(data.notes, 160);
+          doc.text(noteLines, 25, y + 2);
+          y += noteLines.length * 5 + 12;
         }
 
         doc.setFont('helvetica', 'normal');
@@ -725,7 +1051,12 @@
       });
 
       document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
-      document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+      document.getElementById('printBtn').addEventListener('click', () => {
+        updatePreview();
+        window.print();
+      });
+
       document.getElementById('resetBtn').addEventListener('click', resetForm);
     }
 
